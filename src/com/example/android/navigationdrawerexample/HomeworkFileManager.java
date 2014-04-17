@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +21,7 @@ public class HomeworkFileManager {
 
 	private int pageSum;
 	
+	@SuppressLint("SdCardPath")
 	public HomeworkFileManager(DrawActivity drawActivity, int teacherId, 
 			int courseId, int year, int month, int day, int studentId) throws IOException {
 		this.drawActivity = drawActivity;
@@ -36,14 +37,18 @@ public class HomeworkFileManager {
 			return;
 		}
 		this.studentId = studentId;
-		basePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "//Drawer//hws//" + teacherId + "//" + courseId + "//" +
-				year + "//" + month + "//" + day + "//" + studentId;
+//		Environment.getExternalStorageDirectory().getAbsolutePath() +
+		basePath =  "/mnt/sdcard/Drawer/hws/" + teacherId + "/" + courseId + "/" +
+				year + "/" + month + "/" + day + "/" + studentId;
 		File f = new File(basePath);
 		if (f.exists()) {
+			String[] fs = f.list();
 			pageSum = f.listFiles().length;
-			Bitmap bitmap = BitmapFactory.decodeFile(basePath  + "//1.jpg");
-			drawActivity.setBackgroundImg(bitmap);
-			drawActivity.setTitle(studentId + "的作业 - 1/" + pageSum);
+			Bitmap bitmap = BitmapFactory.decodeFile(basePath  + "/1.jpg");
+			if (bitmap != null) {
+				drawActivity.setBackgroundImg(bitmap);
+				drawActivity.setTitle(studentId + "的作业 - 1/" + pageSum);
+			}
 		}
 		else {
 			f.mkdirs();
